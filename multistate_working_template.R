@@ -3,6 +3,36 @@ rm(list=ls())
 library(tidyverse)
 library(dplyr)
 
+# Revised Section ####
+
+dat<-read.csv("multistate_2020_072.csv")
+
+obs<-c('site','variety','grain.m','grain.a','straw.m','straw.a','poph.m','poph.a')
+
+variety <- c('altair','anka','bialobrzeskie','canda','cfx1','cfx2','crs1','enectoral','fedora17','felina32','ferimon','futura','grandi',
+             'helena','henola','hlesia','hlukauskii51','hliana','joey','katani','nwg2730','nwg331','nwg452','picolo','rigel','uso31','vega','x59')
+
+location<-c('cornell','kansas-lexington','kansas-manhattan','kansas-quicksand','kansas-wichita','maryland','michigan','montana',
+            'north-dakota','virginia','vermont-1','vermont-2','wisconsin')
+
+# functions
+
+obs_sd<-function(variety) {
+  variety.q<- dat$variety == variety
+  variety.r<- which(variety.q)
+  variety<-dat[variety.r,obs]%>%mutate_at(c('grain.m','grain.a','straw.m','straw.a','poph.m','poph.a'),~(scale(.)%>% as.vector),na.rm=TRUE)
+  return(variety)
+}
+
+loc_sd<-lapply(variety,obs_sd) %>% bind_rows
+
+
+
+
+
+
+
+ 
 # List of files
 
 filenames<- list.files(path=".",pattern="multistate_2020_[0-9]{3}.csv",full.names=TRUE)
@@ -15,8 +45,8 @@ for(f in filenames){
 
 variety <- pull(dat,variety)
 
-variety <- list('altair','anka','bialobrzeskie','canda','cfx1','cfx2','crs1','enectoral','fedora17','felina32','ferimon','futura','grandi',
-                'helena','henola','hlesia','joey','katani','nwg2730','nwg331','nwg452','picolo','rigel','uso31','vega','x59')
+variety <- c('altair','anka','bialobrzeskie','canda','cfx1','cfx2','crs1','enectoral','fedora17','felina32','ferimon','futura','grandi',
+                'helena','henola','hlesia','hliana','joey','katani','nwg2730','nwg331','nwg452','picolo','rigel','uso31','vega','x59')
 
 for ( x in variety){
   print(x)
@@ -29,7 +59,7 @@ for ( variety in c('altair','anka','bialobrzeskie','canda','cfx1','cfx2','crs1',
   standardizeZ<-function(variety) 
     variety.q<- dat$variety == variety
     variety.r<- which(variety.q)
-    variety<-dat[variety.r,var]%>%mutate_at(c('grain.m','grain.a','straw.m','straw.a','poph.m','poph.a'),~(scale(.)%>% as.vector))
+    variety<-dat[variety.r,obs]%>%mutate_at(c('grain.m','grain.a','straw.m','straw.a','poph.m','poph.a'),~(scale(.)%>% as.vector))
     return(variety)
   }
 
@@ -38,9 +68,10 @@ for ( variety in c('altair','anka','bialobrzeskie','canda','cfx1','cfx2','crs1',
 standardizeZ<-function(variety) {
   variety.q<- dat$variety == variety
   variety.r<- which(variety.q)
-  variety<-dat[variety.r,var]%>%mutate_at(c('grain.m','grain.a','straw.m','straw.a','poph.m','poph.a'),~(scale(.)%>% as.vector))
+  variety<-dat[variety.r,obs]%>%mutate_at(c('grain.m','grain.a','straw.m','straw.a','poph.m','poph.a'),~(scale(.)%>% as.vector))
   return(variety)
 }
+
 standardizeZ('anka')
 
 
@@ -84,5 +115,19 @@ anka<-dat[anka.r,var] %>%mutate_at(c('grain.m','grain.a','straw.m','straw.a','po
 for ( variety in dat$variety){
   print(variety)
 }
+
+# Loop Functions ####
+
+# lapply
+# sapply
+# apply
+# tapply
+# mapply
+
+x= list(a=1:5,b=rnorm(10))
+lapply(x,mean)
+
+
+lapply(variety,standardizeZ)
 
 
