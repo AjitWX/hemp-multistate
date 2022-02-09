@@ -3,6 +3,54 @@ rm(list=ls())
 library(tidyverse)
 library(dplyr)
 
+#### Working Code ####
+
+library(tidyverse)
+
+filenames<- list.files(path=".",pattern="multistate_2020_[0-9]{3}.csv",full.names=TRUE)
+
+std_yields <- function(f) { 
+  data <- read.csv(f)
+  avg_yields <- data %>%
+    select(site, variety, grain.m, grain.a, straw.m, straw.a, poph.m, poph.a)%>%
+    group_by(site,variety) %>%
+    summarize(count = n(),    
+              avg_grain.a = mean(grain.a, na.rm=T),
+              avg_straw.a = mean(straw.a, na.rm=T),
+              avg_poph.a = mean(poph.a,na.rm=T),
+              se_grain.a = sd(grain.a, na.rm=T)/sqrt(n()),
+              se_straw.a = sd(straw.a, na.rm=T)/sqrt(n()),
+              se_poph.a = sd(poph.a, na.rm=T)/sqrt(n()))
+  
+  
+  site_avg_yields <- avg_yields %>%
+    group_by(site) %>%
+    summarize(count = n(),    
+              avg_grain.a = mean(avg_yields$avg_grain.a, na.rm=T),
+              avg_straw.a = mean(avg_yields$avg_straw.a, na.rm=T),
+              avg_poph.a = mean(avg_yields$avg_poph.a,na.rm=T),
+              std_grain.a = sd(avg_yields$avg_grain.a, na.rm=T),
+              std_straw.a = sd(avg_yields$avg_straw.a, na.rm=T),
+              std_poph.a = sd(avg_yields$avg_poph.a, na.rm=T))
+  
+  site_std_yields <- data %>%
+    rowwise(site,variety) %>%
+    transmute( std_grain = (grain.a-site_avg_yields$avg_grain.a)/site_avg_yields$std_grain.a,
+               std_straw = (straw.a-site_avg_yields$avg_straw.a)/site_avg_yields$std_straw.a,
+               std_poph = (poph.a-site_avg_yields$avg_poph.a)/site_avg_yields$std_poph.a)
+  return(site_std_yields)
+}
+
+std_072 <- std_yields("multistate_2020_111.csv")
+std_182 <- std_yields("multistate_2020_182.csv")
+
+df_list <- lapply(filenames,std_yields)
+
+for(f in filenames){
+  std_yields(f)
+  
+  
+
 # List of files
 
 filenames<- list.files(path=".",pattern="multistate_2020_[0-9]{3}.csv",full.names=TRUE)
