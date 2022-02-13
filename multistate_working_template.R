@@ -8,8 +8,6 @@ library(dplyr)
 
 library(tidyverse)
 
-filenames<- list.files(path=".",pattern="multistate_2020_[0-9]{3}.csv",full.names=TRUE)
-
 std_yields <- function(f) { 
   data <- read.csv(f)
   avg_yields <- data %>%
@@ -35,22 +33,41 @@ std_yields <- function(f) {
               std_poph.a = sd(avg_yields$avg_poph.a, na.rm=T))
   
   site_std_yields <- data %>%
-    rowwise(site,variety) %>%
-    transmute( std_grain = (grain.a-site_avg_yields$avg_grain.a)/site_avg_yields$std_grain.a,
-               std_straw = (straw.a-site_avg_yields$avg_straw.a)/site_avg_yields$std_straw.a,
-               std_poph = (poph.a-site_avg_yields$avg_poph.a)/site_avg_yields$std_poph.a)
+    rowwise() %>%
+    mutate( std_grain = (grain.a-site_avg_yields$avg_grain.a)/site_avg_yields$std_grain.a,
+            std_straw = (straw.a-site_avg_yields$avg_straw.a)/site_avg_yields$std_straw.a,
+            std_poph = (poph.a-site_avg_yields$avg_poph.a)/site_avg_yields$std_poph.a)
+            
+               
   return(site_std_yields)
 }
 
-std_072 <- std_yields("multistate_2020_111.csv")
-std_182 <- std_yields("multistate_2020_182.csv")
+std_list <- lapply((list.files(path=".",pattern="multistate_2020_[0-9]{3}.csv",full.names=TRUE)),std_yields)
 
-df_list <- lapply(filenames,std_yields)
+std_data <- bind_rows(std_list)
 
+ggplot(std_data,aes(x=variety,y=std_grain))+
+  geom_bar(stat="identity")+
+  facet_wrap(vars(site))+
+  theme(axis.text.x = element_text(angle=90))
+
+ggplot(std_data,aes(x=variety,y=std_straw))+
+  geom_bar(stat="identity")+
+  facet_wrap(vars(site))+
+  theme(axis.text.x = element_text(angle=90))
+
+ggplot(std_data,aes(x=variety,y=std_poph))+
+  geom_bar(stat="identity")+
+  facet_wrap(vars(site))+
+  theme(axis.text.x = element_text(angle=90))
+
+#### 
+
+data <- read.csv("multistate_2020_fulldata.csv")
 for(f in filenames){
   std_yields(f)
-  
-  
+}  
+   
 
 =======
 # Revised Section ####
