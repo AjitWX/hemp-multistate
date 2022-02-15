@@ -11,6 +11,7 @@ std_yields <- function(f) {
   data <- read.csv(f)
   avg_yields <- data %>%
     select(site, variety, grain.m, grain.a, straw.m, straw.a, poph.m, poph.a)%>%
+    mutate(site = toupper(site), variety = toupper(variety)) %>% 
     group_by(site,variety) %>%
     summarize(count = n(),    
               avg_grain.a = mean(grain.a, na.rm=T),
@@ -63,7 +64,27 @@ ggplot(grains,aes(x=variety,y=std_grain))+
   labs(x = "Variety", y = "Grain Yield Z") +
   theme_bw(base_size = 10) +
   theme(axis.text.x = element_text(angle=90))
-ggsave("output/grains.png", height=10, width=10)
+ggsave("output/grains.png", height=15, width=15)
+
+grain_3 <- grains %>% 
+  filter(site %in% c("WISCONSIN", "KANSAS_LEXINGTON", "CORNELL"))
+grain_3$site <- factor(grain_3$site, levels=c("WISCONSIN", "KANSAS_LEXINGTON", "CORNELL"))
+
+ggplot(grain_3,aes(x=variety,y=std_grain))+
+  geom_bar(stat="identity") +
+  facet_wrap(vars(site)) +
+  labs(x = "Variety", y = "Grain Yield Z") +
+  theme_bw(base_size = 12) +
+  theme(axis.text.x = element_text(angle=90))
+ggsave("output/grains_3.png", height=10, width=15)
+
+ggplot(grains,aes(x=variety,y=std_grain))+
+  geom_bar(stat="identity") +
+  facet_wrap(vars(site)) +
+  labs(x = "Variety", y = "Grain Yield Z") +
+  theme_bw(base_size = 10) +
+  theme(axis.text.x = element_text(angle=90))
+ggsave("output/grains.png", height=15, width=15)
 
 std_grain_yield_variety <- grains %>% 
   group_by(variety) %>% 
@@ -85,10 +106,22 @@ straws$variety <- factor(straws$variety, levels=c(unique(straws$variety)))
 ggplot(straws,aes(x=variety,y=std_straw))+
   geom_bar(stat="identity")+
   facet_wrap(vars(site))+
-  labs(x = "Variety", y = "Grain Yield Z") +
+  labs(x = "Variety", y = "Straw Yield Z") +
   theme_bw(base_size = 10) +
   theme(axis.text.x = element_text(angle=90))
 ggsave("output/straws.png", height=10, width=10)
+
+straw_3 <- straws %>% 
+  filter(site %in% c("WISCONSIN", "KANSAS_LEXINGTON", "CORNELL"))
+straw_3$site <- factor(grain_3$site, levels=c("WISCONSIN", "KANSAS_LEXINGTON", "CORNELL"))
+
+ggplot(straw_3,aes(x=variety,y=std_grain))+
+  geom_bar(stat="identity") +
+  facet_wrap(vars(site)) +
+  labs(x = "Variety", y = "Grain Yield Z") +
+  theme_bw(base_size = 12) +
+  theme(axis.text.x = element_text(angle=90))
+ggsave("output/straw_3.png", height=10, width=15)
 
 std_straw_yield_variety <- straws %>% 
   group_by(variety) %>% 
