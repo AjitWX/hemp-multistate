@@ -41,7 +41,7 @@ std_yields <- function(f) {
     select(site, variety, avg_grain.a, avg_straw.a, avg_poph.a, 
            std_grain, std_straw, std_poph,
            se_grain.a, se_straw.a, se_poph.a) 
-               
+  
   return(std_yields)
 }
 
@@ -76,14 +76,51 @@ write_csv(std_grain_yield_variety, "output/grain_rank.csv")
 
 ### Straw
 
-ggplot(std_data,aes(x=variety,y=std_straw))+
+straws <- std_data %>% 
+  filter(!is.na(std_straw)) %>% 
+  arrange(desc(std_straw))
+
+straws$variety <- factor(straws$variety, levels=c(unique(straws$variety)))
+
+ggplot(straws,aes(x=variety,y=std_straw))+
   geom_bar(stat="identity")+
   facet_wrap(vars(site))+
+  labs(x = "Variety", y = "Grain Yield Z") +
+  theme_bw(base_size = 10) +
   theme(axis.text.x = element_text(angle=90))
+ggsave("output/straws.png", height=10, width=10)
+
+std_straw_yield_variety <- straws %>% 
+  group_by(variety) %>% 
+  summarize(avg_std_straw = mean(std_straw),
+            max_std_straw = max(std_straw),
+            min_std_straw = min(std_straw),
+            site_count = n()) %>% 
+  arrange(desc(avg_std_straw))
+write_csv(std_straw_yield_variety, "output/straw_rank.csv")
+
 
 ### Population
 
-ggplot(std_data,aes(x=variety,y=std_poph))+
+population <- std_data %>% 
+  filter(!is.na(std_poph)) %>% 
+  arrange(desc(std_poph))
+
+population$variety <- factor(population$variety, levels=c(unique(population$variety)))
+
+ggplot(population,aes(x=variety,y=std_poph))+
   geom_bar(stat="identity")+
   facet_wrap(vars(site))+
+  labs(x = "Variety", y = "Population Z") +
+  theme_bw(base_size = 10) +
   theme(axis.text.x = element_text(angle=90))
+ggsave("output/population.png", height=10, width=10)
+
+std_poph_yield_variety <- population %>% 
+  group_by(variety) %>% 
+  summarize(avg_std_poph = mean(std_poph),
+            max_std_poph = max(std_poph),
+            min_std_poph = min(std_poph),
+            site_count = n()) %>% 
+  arrange(desc(avg_std_poph))
+write_csv(std_poph_yield_variety, "output/population_rank.csv")
