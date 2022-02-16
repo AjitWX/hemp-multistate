@@ -11,7 +11,7 @@ std_yields <- function(f) {
   data <- read.csv(f)
   avg_yields <- data %>%
     select(site, variety, grain.m, grain.a, straw.m, straw.a, poph.m, poph.a)%>%
-    mutate(site = toupper(site), variety = toupper(variety)) %>%
+    mutate(site = toupper(site), variety = toupper(variety)) %>% 
     group_by(site,variety) %>%
     summarize(count = n(),    
               avg_grain.a = mean(grain.a, na.rm=T),
@@ -113,6 +113,7 @@ ggplot(straw_3,aes(x=variety,y=std_grain))+
   labs(x = "Variety", y = "Straw Yield Z") +
   theme_bw(base_size = 12) +
   theme(axis.text.x = element_text(angle=90))
+
 ggsave("output/straw_3.png", height=10, width=15)
 
 std_straw_yield_variety <- straws %>% 
