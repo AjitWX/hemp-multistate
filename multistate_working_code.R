@@ -46,7 +46,7 @@ std_yields <- function(f) {
   return(std_yields)
 }
 
-std_list <- lapply((list.files(path="./data",pattern="multistate_2020_[0-9]{3}.csv",full.names=TRUE)),std_yields)
+std_list <- lapply((list.files(path="./data",pattern="multistate_2021_[0-9]{3}.csv",full.names=TRUE)),std_yields)
 
 std_data <- bind_rows(std_list)
 
@@ -67,8 +67,8 @@ ggplot(grains,aes(x=variety,y=std_grain))+
 ggsave("output/grains.png", height=15, width=15)
 
 grain_3 <- grains %>% 
-  filter(site %in% c("WISCONSIN", "KANSAS_LEXINGTON", "CORNELL"))
-grain_3$site <- factor(grain_3$site, levels=c("WISCONSIN", "KANSAS_LEXINGTON", "CORNELL"))
+  filter(site %in% c("CORNELL", "KANSAS LEXINGTON", "WISCONSIN" ))
+grain_3$site <- factor(grain_3$site, levels=c("CORNELL", "KANSAS LEXINGTON", "WISCONSIN"))
 
 ggplot(grain_3,aes(x=variety,y=std_grain))+
   geom_bar(stat="identity") +
@@ -77,14 +77,6 @@ ggplot(grain_3,aes(x=variety,y=std_grain))+
   theme_bw(base_size = 12) +
   theme(axis.text.x = element_text(angle=90))
 ggsave("output/grains_3.png", height=10, width=15)
-
-ggplot(grains,aes(x=variety,y=std_grain))+
-  geom_bar(stat="identity") +
-  facet_wrap(vars(site)) +
-  labs(x = "Variety", y = "Grain Yield Z") +
-  theme_bw(base_size = 10) +
-  theme(axis.text.x = element_text(angle=90))
-ggsave("output/grains.png", height=15, width=15)
 
 std_grain_yield_variety <- grains %>% 
   group_by(variety) %>% 
@@ -112,15 +104,16 @@ ggplot(straws,aes(x=variety,y=std_straw))+
 ggsave("output/straws.png", height=10, width=10)
 
 straw_3 <- straws %>% 
-  filter(site %in% c("WISCONSIN", "KANSAS_LEXINGTON", "CORNELL"))
-straw_3$site <- factor(grain_3$site, levels=c("WISCONSIN", "KANSAS_LEXINGTON", "CORNELL"))
+  filter(site %in% c( "CORNELL", "KANSAS LEXINGTON", "WISCONSIN"))
+straw_3$site <- factor(straw_3$site, levels=c("CORNELL", "KANSAS LEXINGTON", "WISCONSIN"))
 
 ggplot(straw_3,aes(x=variety,y=std_grain))+
   geom_bar(stat="identity") +
   facet_wrap(vars(site)) +
-  labs(x = "Variety", y = "Grain Yield Z") +
+  labs(x = "Variety", y = "Straw Yield Z") +
   theme_bw(base_size = 12) +
   theme(axis.text.x = element_text(angle=90))
+
 ggsave("output/straw_3.png", height=10, width=15)
 
 std_straw_yield_variety <- straws %>% 
