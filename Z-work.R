@@ -70,6 +70,10 @@ std_avg_yields <- std_data %>%
   group_by(variety) %>% 
   filter(!is.na(avg_grain.a)) %>%
   summarize(count = n(),
-            z_grain.a = mean(z_grain, na.rm=T),
-            z_straw.A = mean(z_straw, na.rm=T))
-
+            z_grain_a = mean(z_grain, na.rm=T),
+            z_grain_max = max(z_grain, na.rm=T),
+            z_grain_min = min(z_grain, na.rm=T),
+            z_straw_a = mean(z_straw, na.rm=T),
+            z_straw_max = max(z_straw, na.rm=T),
+            z_straw_min = min(z_straw, na.rm=T))
+write_csv(std_avg_yields, "std_avg_yields.csv")
