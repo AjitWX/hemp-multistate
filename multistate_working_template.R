@@ -3,6 +3,76 @@ rm(list=ls())
 library(tidyverse)
 library(dplyr)
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+#### Working Code ####
+
+library(tidyverse)
+
+std_yields <- function(f) { 
+  data <- read.csv(f)
+  avg_yields <- data %>%
+    select(site, variety, grain.m, grain.a, straw.m, straw.a, poph.m, poph.a)%>%
+    group_by(site,variety) %>%
+    summarize(count = n(),    
+              avg_grain.a = mean(grain.a, na.rm=T),
+              avg_straw.a = mean(straw.a, na.rm=T),
+              avg_poph.a = mean(poph.a,na.rm=T),
+              se_grain.a = sd(grain.a, na.rm=T)/sqrt(n()),
+              se_straw.a = sd(straw.a, na.rm=T)/sqrt(n()),
+              se_poph.a = sd(poph.a, na.rm=T)/sqrt(n()))
+  
+  
+  site_avg_yields <- avg_yields %>%
+    group_by(site) %>%
+    summarize(count = n(),    
+              avg_grain.a = mean(avg_yields$avg_grain.a, na.rm=T),
+              avg_straw.a = mean(avg_yields$avg_straw.a, na.rm=T),
+              avg_poph.a = mean(avg_yields$avg_poph.a,na.rm=T),
+              std_grain.a = sd(avg_yields$avg_grain.a, na.rm=T),
+              std_straw.a = sd(avg_yields$avg_straw.a, na.rm=T),
+              std_poph.a = sd(avg_yields$avg_poph.a, na.rm=T))
+  
+  site_std_yields <- data %>%
+    rowwise() %>%
+    mutate( std_grain = (grain.a-site_avg_yields$avg_grain.a)/site_avg_yields$std_grain.a,
+            std_straw = (straw.a-site_avg_yields$avg_straw.a)/site_avg_yields$std_straw.a,
+            std_poph = (poph.a-site_avg_yields$avg_poph.a)/site_avg_yields$std_poph.a)
+            
+               
+  return(site_std_yields)
+}
+
+std_list <- lapply((list.files(path=".",pattern="multistate_2020_[0-9]{3}.csv",full.names=TRUE)),std_yields)
+
+std_data <- bind_rows(std_list)
+
+ggplot(std_data,aes(x=variety,y=std_grain))+
+  geom_bar(stat="identity")+
+  facet_wrap(vars(site))+
+  theme(axis.text.x = element_text(angle=90))
+
+ggplot(std_data,aes(x=variety,y=std_straw))+
+  geom_bar(stat="identity")+
+  facet_wrap(vars(site))+
+  theme(axis.text.x = element_text(angle=90))
+
+ggplot(std_data,aes(x=variety,y=std_poph))+
+  geom_bar(stat="identity")+
+  facet_wrap(vars(site))+
+  theme(axis.text.x = element_text(angle=90))
+
+#### 
+
+data <- read.csv("multistate_2020_fulldata.csv")
+for(f in filenames){
+  std_yields(f)
+}  
+   
+
+=======
+>>>>>>> 792bf515dc00ed12b9cb0d5a7b6cf5fd153db99b
 # Revised Section ####
 
 dat<-read.csv("multistate_2020_072.csv")
@@ -33,6 +103,10 @@ loc_sd<-lapply(variety,obs_sd) %>% bind_rows
 
 
  
+<<<<<<< HEAD
+=======
+>>>>>>> a68e443f90f2251df9e4dbecba41b25510622246
+>>>>>>> 792bf515dc00ed12b9cb0d5a7b6cf5fd153db99b
 # List of files
 
 filenames<- list.files(path=".",pattern="multistate_2020_[0-9]{3}.csv",full.names=TRUE)
