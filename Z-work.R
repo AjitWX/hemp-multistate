@@ -60,7 +60,7 @@ var_avg_yields <- avg_data %>%
 
 std_list <- lapply(variety.c,var.z)
 
-std_data <- bind_rows(var_list)
+std_data <- bind_rows(std_list)
 
 std_avg_yields <- std_data %>% 
   group_by(variety) %>% 
