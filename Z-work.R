@@ -8,7 +8,7 @@ variety.c <- c( "ALTAIR", "ANKA", "BIALOBRZESKIE", "CFX-1" ,"CFX-2", "GRANDI",
                 "H-51", "HENOLA", "HLESIA", "HLIANA", "LARA", "NWG 2730",
                 "NWG 2463", "NWG 4000", "NWG 4113", "VEGA", "X-59")
 
-site.c <- c('KENTUCKY LEXINGTON', 'MICHIGAN', 'MONTANA', 'CORNELL', 'VIRGINIA', 
+site.c <- c('TENNESSEE','KENTUCKY LEXINGTON', 'MICHIGAN', 'MONTANA', 'CORNELL', 'VIRGINIA', 
             'VERMONT', 'WISCONSIN')
 
 avg_yields <- function(f) { 
