@@ -4,6 +4,8 @@ library(tidyverse)
 library(dplyr)
 
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
 #### Working Code ####
 
 library(tidyverse)
@@ -70,6 +72,7 @@ for(f in filenames){
    
 
 =======
+>>>>>>> 792bf515dc00ed12b9cb0d5a7b6cf5fd153db99b
 # Revised Section ####
 
 dat<-read.csv("multistate_2020_072.csv")
@@ -100,7 +103,10 @@ loc_sd<-lapply(variety,obs_sd) %>% bind_rows
 
 
  
+<<<<<<< HEAD
+=======
 >>>>>>> a68e443f90f2251df9e4dbecba41b25510622246
+>>>>>>> 792bf515dc00ed12b9cb0d5a7b6cf5fd153db99b
 # List of files
 
 filenames<- list.files(path=".",pattern="multistate_2020_[0-9]{3}.csv",full.names=TRUE)
