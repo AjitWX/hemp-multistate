@@ -8,7 +8,7 @@ variety.c <- c( "ALTAIR", "ANKA", "BIALOBRZESKIE", "CFX-1" ,"CFX-2", "GRANDI",
                 "H-51", "HENOLA", "HLESIA", "HLIANA", "LARA", "NWG 2730",
                 "NWG 2463", "NWG 4000", "NWG 4113", "VEGA", "X-59")
 
-site.c <- c('KENTUCKY LEXINGTON', 'MICHIGAN', 'MONTANA', 'CORNELL', 'VIRGINIA', 
+site.c <- c('TENNESSEE','KENTUCKY LEXINGTON', 'MICHIGAN', 'MONTANA', 'CORNELL', 'VIRGINIA', 
             'VERMONT', 'WISCONSIN')
 
 avg_yields <- function(f) { 
@@ -69,7 +69,11 @@ std_data <- bind_rows(std_list)
 std_avg_yields <- std_data %>% 
   group_by(variety) %>% 
   filter(!is.na(avg_grain.a)) %>%
-  summarize(count = n(),
-            z_grain.a = mean(z_grain, na.rm=T),
-            z_straw.A = mean(z_straw, na.rm=T))
-
+    summarize(count = n(),
+            z_grain_a = mean(z_grain, na.rm=T),
+            z_grain_max = max(z_grain, na.rm=T),
+            z_grain_min = min(z_grain, na.rm=T),
+            z_straw_a = mean(z_straw, na.rm=T),
+            z_straw_max = max(z_straw, na.rm=T),
+            z_straw_min = min(z_straw, na.rm=T))
+write_csv(std_avg_yields, "std_avg_yields.csv")
